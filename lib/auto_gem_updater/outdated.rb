@@ -2,13 +2,13 @@ require 'open3'
 
 module AutoGemUpdater
   class Outdated
-    NONUPDATABLE_GEMS = %w[
-      actioncable actionmailer actionpack actionview activejob activemodel
-      activerecord activestorage activesupport rails nokogiri
-    ].freeze
-
     GEM_LINE_REGEX =
       /(?<gem>[\w-]+)\s{1}\(newest\s{1}(?<newest>[\d\.]+)\,\s{1}installed\s{1}(?<installed>[\d\.]+)\)/
+
+    def initialize
+      @bundle_outdated_command =
+        "bundle outdated --parseable #{AutoGemUpdater.outdated_options}"
+    end
 
     def self.perform
       new.perform
@@ -20,10 +20,10 @@ module AutoGemUpdater
       outdated_gems = []
 
       Open3
-        .popen3('bundle outdated --strict --parseable') do |_stdin, stdout, _stderr, _wait_thr|
+        .popen3(bundle_outdated_command) do |_stdin, stdout, _stderr, _wait_thr|
           while (line = stdout.gets)
             parsed_data = parse_line(line)
-            next if parsed_data.nil? || NONUPDATABLE_GEMS.include?(parsed_data[:name])
+            next if parsed_data.nil? || AutoGemUpdater.ignore_gems.include?(parsed_data[:name])
 
             outdated_gems.push(parsed_data)
           end
@@ -33,6 +33,8 @@ module AutoGemUpdater
     end
 
     private
+
+    attr_reader :bundle_outdated_command
 
     def parse_line(line)
       return unless (match_data = line.match(GEM_LINE_REGEX))

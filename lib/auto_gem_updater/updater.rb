@@ -1,15 +1,15 @@
-require 'open3'
 require_relative 'system'
+require_relative 'outdated'
 
 module AutoGemUpdater
   class Updater
     include System
 
-    def self.perform(outdated_gems)
-      new(outdated_gems).perform
+    def self.perform
+      new(outdated_gems: AutoGemUpdater::Outdated.perform).perform
     end
 
-    def initialize(outdated_gems)
+    def initialize(outdated_gems:)
       @outdated_gems = outdated_gems
     end
     private_class_method :new
@@ -22,11 +22,14 @@ module AutoGemUpdater
         puts "Updating #{name} from #{installed} to #{newest}"
         system_command("bundle update #{name} --conservative")
 
-        if system_command("rspec")
+        if AutoGemUpdater.pre_checks.all? { |check| system_command(check) }
           puts "Update checks passed commiting update to #{name}"
 
-          system_command("git add .")
-          system_command("git commit -m 'Update the gem #{name} from #{installed} to #{newest}'")
+          system_command('git add Gemfile.lock')
+          system_command("git commit -m 'Updated: #{name} from #{installed} to #{newest}'")
+        else
+          puts "Failed to update the gem #{name}"
+          system_command('git checkout .')
         end
       end
     end
