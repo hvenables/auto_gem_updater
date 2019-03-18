@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Auto Update Gems}
   spec.license       = "MIT"
+  spec.homepage      = "https://github.com/hvenables/auto_gem_updater"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
