@@ -32,14 +32,29 @@ end
 each of the options above can be configured inside the above block (e.g `config.pre_checks = ['bundle exec rspec']`)
 
 #### pre_checks
-`pre_checks` is expected to be an array of all the checks you want performed before an update to a gem is commit 
+`pre_checks` is expected to be an array of all the checks you want performed before an update to a gem is commit. The default is an empty array.
 
-For example `[bundle exec rspec, bundle exec rake routes,...]`
+For example `['bundle exec rspec', 'bundle exec rake routes',...]`
+
+#### outdated_options
+`outdated_options` is expected to be an array of options that you want to be passed to `bundle outdated` any of the options form the (docs)[https://bundler.io/man/bundle-outdated.1.html] are supported. The default is `['strict']`.
+
+For example `['strict', 'minor']`
+
+#### ignore_gems
+`ignore_gems` is expected to be an array of gems that you do not want the auto gem updater to attempt to update. The default is an empty array.
+
+For example `['nokogiri', 'rails',...]`
 
 ## Usage
 
 Once the gem is installed it will add to some rake tasks that will allow you to update your gems.
 
+#### Update
+`rake auto_gem_updater:update` is the main rake task. It will first create a branch, called `auto_gem_updates_ + todays date`. It will then loop over all the gems that it finds out of date according to the outdated_options each time running all the pre_checks specified in the initializer and only if they succeed add the updated gem version to git (otherwise it resets to before trying to update the gem).
+
+#### Outdated
+`rake auto_gem_updater:outdated` will list out all the gems that the update command will attempt to update.
 
 ## Contributing
 
