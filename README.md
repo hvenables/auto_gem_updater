@@ -37,7 +37,7 @@ each of the options above can be configured inside the above block (e.g `config.
 For example `['bundle exec rspec', 'bundle exec rake routes',...]`
 
 #### outdated_options
-`outdated_options` is expected to be an array of options that you want to be passed to `bundle outdated` any of the options form the (docs)[https://bundler.io/man/bundle-outdated.1.html] are supported. The default is `['strict']`.
+`outdated_options` is expected to be an array of options that you want to be passed to `bundle outdated` any of the options form the [docs](https://bundler.io/man/bundle-outdated.1.html) are supported. The default is `['strict']`.
 
 For example `['strict', 'minor']`
 
