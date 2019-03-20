@@ -15,10 +15,7 @@ module AutoGemUpdater
   end
 
   def self.outdated_options=(outdated_options)
-    @outdated_options =
-      outdated_options.each_with_object('') do |option, options|
-        options << " --#{option}"
-      end
+    @outdated_options = outdated_options.map { |option| " --#{option}" }.join
   end
 
   def self.outdated_options
