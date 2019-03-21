@@ -29,7 +29,7 @@ module AutoGemUpdater
           system_command("git commit -m 'Updated: #{name} from #{installed} to #{newest}'")
         else
           puts "Failed to update the gem #{name}"
-          system_command('git checkout .')
+          system_command('git checkout Gemfile.lock')
         end
       end
     end
